@@ -22,7 +22,7 @@
 
 ## Project Overview
 
-This is a **production-ready, enterprise-grade monorepo** that combines Strapi CMS with Next.js frontend. It's designed as a **page builder** for enterprise applications with full TypeScript support, internationalization, authentication, and SEO optimization.
+This is a **production-ready, enterprise-grade monorepo** that combines Strapi CMS with Next.js frontend. It's designed as a **page builder** for enterprise applications with full TypeScript support, internationalization, authentication, and SEO.
 
 **Key Features:**
 - Strapi v5 headless CMS with custom page builder
@@ -70,7 +70,7 @@ This is a **production-ready, enterprise-grade monorepo** that combines Strapi C
 
 ## Repository Structure
 
-```
+```plaintext
 /home/user/proframos_strapi/
 ├── apps/
 │   ├── strapi/              # Strapi v5 CMS Backend
@@ -164,6 +164,7 @@ This is a **production-ready, enterprise-grade monorepo** that combines Strapi C
 ### Initial Setup
 
 1. **Prerequisites:**
+
    ```bash
    node 22.x.x
    yarn 1.22.x
@@ -171,28 +172,34 @@ This is a **production-ready, enterprise-grade monorepo** that combines Strapi C
    ```
 
 2. **Install dependencies:**
+
    ```bash
    nvm use  # Switch to Node 22
    yarn     # Install all dependencies
    ```
+
    - The `postinstall` script runs `setup:apps` to copy `.example` files
 
 3. **Start database:**
+
    ```bash
    cd apps/strapi
    docker compose up -d
    ```
 
 4. **Start Strapi (first time):**
+
    ```bash
    yarn dev:strapi
    ```
+
    - Create admin user
    - Navigate to Settings > API Tokens
    - Create read-only token
    - Copy to `apps/ui/.env.local` as `STRAPI_REST_READONLY_API_KEY`
 
 5. **Start all apps:**
+
    ```bash
    yarn dev  # Runs both Strapi and UI
    ```
@@ -200,17 +207,20 @@ This is a **production-ready, enterprise-grade monorepo** that combines Strapi C
 ### Daily Development
 
 **Run both apps:**
+
 ```bash
 yarn dev
 ```
 
 **Run individual apps:**
+
 ```bash
 yarn dev:strapi  # Strapi only (localhost:1337)
 yarn dev:ui      # Next.js only (localhost:3000)
 ```
 
 **Build commands:**
+
 ```bash
 yarn build         # Build all apps
 yarn build:strapi  # Build Strapi admin panel
@@ -218,6 +228,7 @@ yarn build:ui      # Build Next.js for production
 ```
 
 **Code quality:**
+
 ```bash
 yarn format        # Format all code with Prettier
 yarn lint          # Run ESLint on all apps
@@ -225,12 +236,14 @@ yarn commit        # Interactive commit (Commitizen)
 ```
 
 **Type generation:**
+
 ```bash
 # In apps/strapi/
 yarn generate:types  # Generate TypeScript types from schemas
 ```
 
 **Database management:**
+
 ```bash
 # In apps/strapi/
 yarn run:db        # Start Docker database
@@ -241,6 +254,7 @@ yarn import        # Import data
 ### Git Workflow
 
 **Commit process:**
+
 1. Stage files: `git add .`
 2. Run: `yarn commit` (or `git commit`)
 3. Husky runs:
@@ -248,7 +262,8 @@ yarn import        # Import data
    - **commit-msg:** Validates conventional commit format
 
 **Conventional Commit Format:**
-```
+
+```plaintext
 type(scope?): subject
 
 Example:
@@ -257,7 +272,7 @@ fix(strapi): resolve hierarchy calculation bug
 docs: update CLAUDE.md with new patterns
 ```
 
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`, `build`, `revert`
+**Types:** `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`, `build`, `revert`
 
 ---
 
@@ -268,11 +283,13 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`
 #### Strapi Backend
 
 **Generated Types (DO NOT EDIT MANUALLY):**
+
 - Location: `apps/strapi/types/generated/`
 - Auto-generated from schemas
 - Regenerate: `yarn generate:types`
 
 **Custom Types:**
+
 ```typescript
 // types/internals.ts or individual type files
 import type { UID } from "@strapi/strapi"
@@ -285,6 +302,7 @@ export interface CustomType {
 #### Next.js Frontend
 
 **Import Strapi Types:**
+
 ```typescript
 import type { Result, UID } from "@repo/strapi"
 
@@ -293,6 +311,7 @@ const data: APIResponse<Result<"api::page.page", TParams>>
 ```
 
 **Environment Variables:**
+
 ```typescript
 // Validated via env.mjs
 import { env } from "@/env.mjs"
@@ -301,6 +320,7 @@ const apiUrl = env.STRAPI_URL  // Type-safe
 ```
 
 **Content Type UIDs:**
+
 ```typescript
 "api::page.page"
 "api::navbar.navbar"
@@ -312,18 +332,21 @@ const apiUrl = env.STRAPI_URL  // Type-safe
 #### Naming Conventions
 
 **Strapi-rendered components:** Prefix with `Strapi`
+
 ```typescript
 // components/page-builder/components/sections/StrapiHero.tsx
 export function StrapiHero({ component, pageParams, page }) { }
 ```
 
 **Reusable UI components:** Descriptive names
+
 ```typescript
 // components/elementary/AppLink.tsx
 export function AppLink({ href, children }) { }
 ```
 
 **Shadcn components:** Lowercase with hyphens (DO NOT RENAME)
+
 ```typescript
 // components/ui/button.tsx
 // components/ui/dropdown-menu.tsx
@@ -332,7 +355,8 @@ export function AppLink({ href, children }) { }
 #### File Organization
 
 **Page-specific components:**
-```
+
+```plaintext
 app/[locale]/some-page/
   _components/
     SpecificComponent.tsx
@@ -340,7 +364,8 @@ app/[locale]/some-page/
 ```
 
 **Shared components:**
-```
+
+```plaintext
 components/
   elementary/      # Standalone reusable
   forms/           # Form-related
@@ -353,6 +378,7 @@ components/
 #### Component Composition
 
 **Always use `cn()` for class names:**
+
 ```typescript
 import { cn } from "@/lib/styles"  // NOT from utils!
 
@@ -366,6 +392,7 @@ export function Container({ className, children }: Props) {
 ```
 
 **Error boundaries:**
+
 ```typescript
 <ErrorBoundary customErrorTitle="Failed to load" showErrorMessage>
   <StrapiComponent component={component} />
@@ -373,6 +400,7 @@ export function Container({ className, children }: Props) {
 ```
 
 **Server vs Client components:**
+
 ```typescript
 // Server component (default)
 export async function ServerComponent() {
@@ -396,6 +424,7 @@ export function ClientComponent() {
 #### Server Context (SSR, Server Components, Server Actions)
 
 **Direct calls (no proxy):**
+
 ```typescript
 import { PublicStrapiClient } from "@/lib/strapi-api"
 
@@ -419,6 +448,7 @@ const navbar = await fetchNavbar(locale)
 #### Client Context (Client Components, React Hooks)
 
 **Use proxy (required for security):**
+
 ```typescript
 "use client"
 
@@ -444,6 +474,7 @@ export function ClientComponent() {
 #### API Client Methods
 
 **BaseStrapiClient methods:**
+
 ```typescript
 // Fetch single by ID
 await client.fetchOne(uid, id, params)
@@ -462,6 +493,7 @@ await client.fetchAll(uid, filters, params, options)
 ```
 
 **Populate patterns:**
+
 ```typescript
 // Basic populate
 { populate: "*" }
@@ -494,6 +526,7 @@ await client.fetchAll(uid, filters, params, options)
 #### Endpoint Mapping
 
 **Maintain API_ENDPOINTS in `lib/strapi-api/base.ts`:**
+
 ```typescript
 export const API_ENDPOINTS: { [key in UID.ContentType]?: string } = {
   "api::page.page": "/pages",
@@ -509,6 +542,7 @@ export const API_ENDPOINTS: { [key in UID.ContentType]?: string } = {
 #### MUST Use cn() Utility
 
 **Correct:**
+
 ```typescript
 import { cn } from "@/lib/styles"
 
@@ -516,6 +550,7 @@ import { cn } from "@/lib/styles"
 ```
 
 **Incorrect:**
+
 ```typescript
 // ❌ DO NOT DO THIS
 <div className={`base-classes ${conditional ? 'variant' : ''} ${props.className}`} />
@@ -524,16 +559,19 @@ import { cn } from "@/lib/styles"
 #### Tailwind CSS v4 Patterns
 
 **Responsive design:**
+
 ```typescript
 className="text-sm md:text-base lg:text-lg"
 ```
 
 **Dark mode:**
+
 ```typescript
 className="bg-white dark:bg-gray-900"
 ```
 
 **Custom utilities (in globals.css):**
+
 ```css
 @theme {
   --color-brand: #ff6b6b;
@@ -601,6 +639,7 @@ export interface ButtonProps extends VariantProps<typeof buttonVariants> {
 3. Component mapping is in `apps/ui/src/components/page-builder/index.tsx`
 
 **Component Mapping (CRITICAL):**
+
 ```typescript
 // apps/ui/src/components/page-builder/index.tsx
 
@@ -617,12 +656,14 @@ export const componentsMap = {
 ```
 
 **⚠️ IMPORTANT:** When adding a new Strapi component:
+
 1. Create the component in Strapi
 2. Create the React component in `apps/ui/src/components/page-builder/components/`
 3. **MUST UPDATE** the mapping in `index.tsx`
 4. Component receives: `component` (data), `pageParams` (route params), `page` (full page data)
 
 **Example component:**
+
 ```typescript
 // components/page-builder/components/sections/StrapiHero.tsx
 import type { Strapi } from "@/types/strapi"
@@ -646,6 +687,7 @@ export function StrapiHero({ component, pageParams, page }: Props) {
 ### 2. Page Hierarchy & Redirects
 
 **Hierarchical Pages:**
+
 - Pages have parent/child relationships
 - `fullPath` is auto-generated (e.g., `/parent/child/grandchild`)
 - **DO NOT** edit `fullPath` manually
@@ -654,6 +696,7 @@ export function StrapiHero({ component, pageParams, page }: Props) {
 **Workflow for URL Changes:**
 
 When changing a page's slug or parent:
+
 1. Change is saved → `fullPath` needs recalculation
 2. System creates "internal jobs"
 3. **Admin must manually trigger jobs:**
@@ -663,35 +706,41 @@ When changing a page's slug or parent:
 4. Redirects are auto-created from old URLs to new URLs
 
 **Implementation Details:**
+
 - Lifecycle hooks: `apps/strapi/src/lifeCycles/`
 - Hierarchy utilities: `apps/strapi/src/utils/hierarchy/`
 - Breadcrumb generation: `apps/strapi/src/utils/breadcrumbs.ts`
 - Documentation: `docs/pages-hierarchy.md`
 
 **⚠️ CRITICAL:** Always run jobs in this order:
+
 1. Recalculate fullPath
 2. Create redirects
 
 ### 3. Proxy Pattern (Security)
 
 **Why proxies?**
+
 - Hide API tokens from client
 - Hide backend URL
 - Prevent CORS issues
 - Centralize API error handling
 
 **Architecture:**
-```
+
+```plaintext
 Client Component → Next.js API Route → Strapi
                    (with API token)
 ```
 
 **Proxy Routes:**
+
 - `/api/public-proxy/[...slug]` - Public data (read-only token)
 - `/api/private-proxy/[...slug]` - User data (JWT token)
 - `/api/asset/[...slug]` - Asset proxy for images
 
 **Endpoint Whitelist:**
+
 ```typescript
 // apps/ui/src/app/api/public-proxy/[...slug]/route.ts
 
@@ -704,6 +753,7 @@ const allowedEndpoints = [
 ```
 
 **⚠️ SECURITY:** When adding a new content type:
+
 1. Add endpoint to `allowedEndpoints` in proxy route
 2. Update `API_ENDPOINTS` in `lib/strapi-api/base.ts`
 
@@ -719,6 +769,7 @@ const allowedEndpoints = [
 ### 4. Type Safety & Code Generation
 
 **Strapi Type Generation:**
+
 ```bash
 # In apps/strapi/
 yarn generate:types
@@ -730,6 +781,7 @@ yarn generate:types
 - Configuration: `config/typescript.ts`
 
 **Frontend Type Imports:**
+
 ```typescript
 // Import from Strapi package
 import type { Result, UID } from "@repo/strapi"
@@ -739,6 +791,7 @@ const data: Result<"api::page.page", { populate: "*" }>
 ```
 
 **Type-Safe API Calls:**
+
 ```typescript
 // Client infers response type from content type UID
 const page = await PublicStrapiClient.fetchOne(
@@ -758,6 +811,7 @@ page.data.attributes.title  // ✓ Type-safe
 **Solution:** Document middleware intercepts queries and applies custom population
 
 **Implementation:**
+
 ```typescript
 // apps/strapi/src/documentMiddlewares/page.ts
 
@@ -780,6 +834,7 @@ export default factory(({ strapi }) => ({
 ```
 
 **Usage:**
+
 ```typescript
 // Trigger middleware with special params
 const pages = await strapi.documents("api::page.page").findMany({
@@ -793,16 +848,19 @@ const pages = await strapi.documents("api::page.page").findMany({
 ### 6. Localization (i18n)
 
 **Strapi:**
+
 - Plugin: `@strapi/plugin-i18n`
 - Enabled on: Pages, Navbar, Footer
 - Locales configured in admin panel
 
 **Next.js:**
+
 - Package: `next-intl`
 - Routing: `/[locale]/...`
 - Supported locales: `lib/i18n.ts`
 
 **Navigation (CRITICAL):**
+
 ```typescript
 // ❌ DO NOT use next/navigation directly
 import { Link } from "next/navigation"
@@ -813,7 +871,8 @@ import { useRouter } from "@/lib/navigation"
 ```
 
 **Translation files:**
-```
+
+```plaintext
 src/locales/
   en.json
   cs.json
@@ -821,6 +880,7 @@ src/locales/
 ```
 
 **Usage in components:**
+
 ```typescript
 import { useTranslations } from "next-intl"
 
@@ -831,6 +891,7 @@ export function Component() {
 ```
 
 **Server components:**
+
 ```typescript
 import { getTranslations } from "next-intl/server"
 
@@ -847,11 +908,13 @@ export async function Component() {
 **Strategy:** JWT (30-day sessions)
 
 **Providers:**
+
 - Credentials (email/password)
 - Google (optional, configured)
 - Facebook (optional, configured)
 
 **Protected Routes:**
+
 ```typescript
 // middleware.ts
 export default withAuth({
@@ -866,6 +929,7 @@ export const config = {
 ```
 
 **Session Access:**
+
 ```typescript
 // Server Component
 import { getAuth } from "@/lib/auth"
@@ -889,6 +953,7 @@ export function ClientComponent() {
 ```
 
 **API Routes:**
+
 ```typescript
 // Server Action
 import { getServerSession } from "next-auth"
@@ -908,6 +973,7 @@ export async function serverAction() {
 **Solution:** `@repo/design-system` package
 
 **How it works:**
+
 1. Define theme in `theme.css` with Tailwind directives
 2. Build process compiles to standard CSS
 3. Strapi imports compiled CSS
@@ -915,6 +981,7 @@ export async function serverAction() {
 5. Both apps use identical styles
 
 **Files:**
+
 - `theme.css` - Source (with @theme, @layer)
 - `styles.css` - Compiled output
 - `styles-strapi.json` - Serialized for Strapi injection
@@ -922,6 +989,7 @@ export async function serverAction() {
 - `ck-fontSize-config.json` - CKEditor font sizes
 
 **Usage in Strapi:**
+
 ```typescript
 // apps/strapi/src/admin/app.tsx
 import styles from "@repo/design-system/styles-strapi.json"
@@ -936,6 +1004,7 @@ export default {
 ```
 
 **⚠️ IMPORTANT:** After changing design tokens:
+
 ```bash
 cd packages/design-system
 yarn build  # Rebuild CSS and JSON exports
@@ -944,6 +1013,7 @@ yarn build  # Rebuild CSS and JSON exports
 ### 9. Environment Management
 
 **Strapi (.env):**
+
 ```bash
 # Required
 HOST=0.0.0.0
@@ -969,6 +1039,7 @@ STRAPI_PREVIEW_SECRET=shared-secret
 ```
 
 **Next.js (.env.local):**
+
 ```bash
 # Required
 NEXTAUTH_URL=http://localhost:3000
@@ -985,6 +1056,7 @@ STRAPI_PREVIEW_SECRET=shared-secret
 ```
 
 **Validation:**
+
 ```typescript
 // apps/ui/env.mjs
 import { createEnv } from "@t3-oss/env-nextjs"
@@ -1009,6 +1081,7 @@ export const env = createEnv({
 **⚠️ Turbo Requirement:**
 
 Add new env vars to `turbo.json` > `globalEnv`:
+
 ```json
 {
   "globalEnv": [
@@ -1021,12 +1094,14 @@ Add new env vars to `turbo.json` > `globalEnv`:
 ### 10. Monorepo Workflow (Turborepo)
 
 **Task Pipeline:**
-```
+
+```plaintext
 build: dependencies^build → app:build
 dev: shared-data#build, design-system#build → app:dev
 ```
 
 **Key Commands:**
+
 ```bash
 # Development
 yarn dev              # All apps
@@ -1043,15 +1118,18 @@ rm -rf .turbo         # Clear Turbo cache
 ```
 
 **Build Order:**
+
 1. Shared packages: `shared-data`, `design-system`
 2. Apps: `strapi`, `ui` (parallel)
 
 **Cache:**
+
 - Location: `.turbo/`
 - Speeds up rebuilds
 - Cleared on `yarn clean` or manually
 
 **Filters:**
+
 ```bash
 # Run command in specific workspace
 turbo build --filter=@repo/ui
@@ -1068,20 +1146,24 @@ turbo build --filter=...@repo/ui  # ui + its deps
 ### Add a New Strapi Component
 
 1. **Create component in Strapi admin:**
+
    - Content-Type Builder > Create Component
    - Add fields
    - Save
 
 2. **Generate types:**
+
    ```bash
    cd apps/strapi
    yarn generate:types
    ```
 
 3. **Create React component:**
+
    ```bash
    # apps/ui/src/components/page-builder/components/sections/StrapiNewComponent.tsx
    ```
+
    ```typescript
    import type { Strapi } from "@/types/strapi"
 
@@ -1101,6 +1183,7 @@ turbo build --filter=...@repo/ui  # ui + its deps
    ```
 
 4. **⚠️ CRITICAL: Update component mapping:**
+
    ```typescript
    // apps/ui/src/components/page-builder/index.tsx
    import { StrapiNewComponent } from "./components/sections/StrapiNewComponent"
@@ -1112,6 +1195,7 @@ turbo build --filter=...@repo/ui  # ui + its deps
    ```
 
 5. **Update middleware population (if needed):**
+
    ```typescript
    // apps/strapi/src/documentMiddlewares/page.ts
    // Add deep population for new component
@@ -1120,17 +1204,20 @@ turbo build --filter=...@repo/ui  # ui + its deps
 ### Add a New Content Type
 
 1. **Create in Strapi admin:**
+
    - Content-Type Builder > Create Collection/Single Type
    - Configure fields
    - Save
 
 2. **Generate types:**
+
    ```bash
    cd apps/strapi
    yarn generate:types
    ```
 
 3. **Add API endpoint:**
+
    ```typescript
    // apps/ui/src/lib/strapi-api/base.ts
    export const API_ENDPOINTS = {
@@ -1140,6 +1227,7 @@ turbo build --filter=...@repo/ui  # ui + its deps
    ```
 
 4. **Add to proxy whitelist:**
+
    ```typescript
    // apps/ui/src/app/api/public-proxy/[...slug]/route.ts
    const allowedEndpoints = [
@@ -1149,6 +1237,7 @@ turbo build --filter=...@repo/ui  # ui + its deps
    ```
 
 5. **Create content fetcher (optional):**
+
    ```typescript
    // apps/ui/src/lib/strapi-api/content/server.ts
    export async function fetchNewType(id: string) {
@@ -1171,17 +1260,20 @@ npx shadcn-ui@latest add tabs
 ```
 
 **⚠️ DO NOT:**
+
 - Rename the `components/ui/` folder
 - Rename individual component files
 - Manually edit Shadcn components (they may be overwritten)
 
 **✓ DO:**
+
 - Extend components in separate files
 - Use composition to customize
 
 ### Add a New Environment Variable
 
 1. **Add to .env files:**
+
    ```bash
    # apps/strapi/.env
    NEW_STRAPI_VAR=value
@@ -1191,6 +1283,7 @@ npx shadcn-ui@latest add tabs
    ```
 
 2. **Add to validation (UI only):**
+
    ```typescript
    // apps/ui/env.mjs
    export const env = createEnv({
@@ -1204,6 +1297,7 @@ npx shadcn-ui@latest add tabs
    ```
 
 3. **Add to Turbo config:**
+
    ```json
    // turbo.json
    {
@@ -1214,6 +1308,7 @@ npx shadcn-ui@latest add tabs
    ```
 
 4. **Update .env.example files:**
+
    ```bash
    # apps/strapi/.env.example
    NEW_STRAPI_VAR=
@@ -1225,6 +1320,7 @@ npx shadcn-ui@latest add tabs
 ### Add a New Translation
 
 1. **Add key to locale files:**
+
    ```json
    // apps/ui/src/locales/en.json
    {
@@ -1242,6 +1338,7 @@ npx shadcn-ui@latest add tabs
    ```
 
 2. **Use in component:**
+
    ```typescript
    import { useTranslations } from "next-intl"
 
@@ -1254,15 +1351,18 @@ npx shadcn-ui@latest add tabs
 ### Run Database Migrations
 
 **Strapi auto-migration:**
+
 - Schema changes are auto-migrated in development
 - No manual migration files needed
 
 **Production deployment:**
+
 1. Build Strapi: `yarn build:strapi`
 2. Start Strapi: `yarn start:strapi`
 3. Strapi auto-migrates database on first run
 
 **Manual database management:**
+
 ```bash
 # Export all data
 cd apps/strapi
@@ -1278,6 +1378,7 @@ yarn import
 ### Deploy to Production
 
 **Docker (recommended):**
+
 ```bash
 # Build Strapi
 docker build -t strapi:latest \
@@ -1294,6 +1395,7 @@ docker build -t ui:latest \
 ```
 
 **Heroku:**
+
 ```bash
 # Configure environment variables in Heroku dashboard
 # Push to Heroku git remote
@@ -1304,6 +1406,7 @@ git push heroku main
 ```
 
 **Vercel (UI only):**
+
 - Root directory: `apps/ui`
 - Build command: `cd ../.. && yarn build:ui`
 - Output directory: `apps/ui/.next`
@@ -1379,67 +1482,81 @@ git push heroku main
 
 ### 🐛 Common Issues
 
-**Issue: "Component not found" in page builder**
-- Cause: Missing component mapping
-- Fix: Add to `apps/ui/src/components/page-builder/index.tsx`
+#### "Component not found" in page builder
 
-**Issue: CORS errors in client components**
-- Cause: Missing `{ useProxy: true }` flag
-- Fix: Add flag to API client call
+- **Cause:** Missing component mapping
+- **Fix:** Add to `apps/ui/src/components/page-builder/index.tsx`
 
-**Issue: Types not updating after Strapi schema change**
-- Cause: Types not regenerated
-- Fix: `cd apps/strapi && yarn generate:types`
+#### CORS errors in client components
 
-**Issue: Turbo cache serving stale builds**
-- Cause: Env var not in `globalEnv`
-- Fix: Add to `turbo.json` > `globalEnv`, then `rm -rf .turbo`
+- **Cause:** Missing `{ useProxy: true }` flag
+- **Fix:** Add flag to API client call
 
-**Issue: Locale switching breaks**
-- Cause: Using `next/navigation` instead of `@/lib/navigation`
-- Fix: Import from correct location
+#### Types not updating after Strapi schema change
 
-**Issue: Styles mismatch between Strapi CKEditor and frontend**
-- Cause: Design system not rebuilt
-- Fix: `cd packages/design-system && yarn build`
+- **Cause:** Types not regenerated
+- **Fix:** `cd apps/strapi && yarn generate:types`
 
-**Issue: "Module not found" for shared packages**
-- Cause: Shared packages not built
-- Fix: `yarn build` (or build specific package)
+#### Turbo cache serving stale builds
+
+- **Cause:** Env var not in `globalEnv`
+- **Fix:** Add to `turbo.json` > `globalEnv`, then `rm -rf .turbo`
+
+#### Locale switching breaks
+
+- **Cause:** Using `next/navigation` instead of `@/lib/navigation`
+- **Fix:** Import from correct location
+
+#### Styles mismatch between Strapi CKEditor and frontend
+
+- **Cause:** Design system not rebuilt
+- **Fix:** `cd packages/design-system && yarn build`
+
+#### "Module not found" for shared packages
+
+- **Cause:** Shared packages not built
+- **Fix:** `yarn build` (or build specific package)
 
 ### 📝 Best Practices
 
 1. **Type Safety:**
+
    - Always use TypeScript
    - Leverage generated types
    - Avoid `any`
 
 2. **Component Structure:**
+
    - Keep components small and focused
    - Use composition over inheritance
    - Server components by default, client when needed
 
 3. **API Calls:**
+
    - Centralize in `lib/strapi-api/content/`
    - Use React Query for client-side data
    - Enable ISR for static pages
 
 4. **Styling:**
+
    - Use design tokens from theme
    - Always use `cn()` for dynamic classes
    - Prefer Tailwind utilities over custom CSS
 
 5. **Git Commits:**
+
    - Use `yarn commit` for conventional commits
    - Write clear, descriptive messages
    - Keep commits atomic
 
 6. **Error Handling:**
+
    - Use ErrorBoundary for component errors
    - Handle API errors gracefully
    - Log errors to Sentry in production
 
 7. **Performance:**
+
    - Use Server Components for static content
    - Lazy load client components
    - Optimize images (next/image)
@@ -1452,19 +1569,22 @@ git push heroku main
 ### Frequently Modified Files
 
 **Component Mapping (CRITICAL):**
-```
+
+```plaintext
 apps/ui/src/components/page-builder/index.tsx
 ```
 
 **API Endpoints:**
-```
+
+```plaintext
 apps/ui/src/lib/strapi-api/base.ts (API_ENDPOINTS)
 apps/ui/src/app/api/public-proxy/[...slug]/route.ts (allowedEndpoints)
 apps/ui/src/app/api/private-proxy/[...slug]/route.ts (allowedEndpoints)
 ```
 
 **Environment Files:**
-```
+
+```plaintext
 apps/strapi/.env
 apps/strapi/.env.example
 apps/ui/.env.local
@@ -1472,7 +1592,8 @@ apps/ui/.env.local.example
 ```
 
 **Configuration:**
-```
+
+```plaintext
 turbo.json
 package.json
 apps/strapi/config/plugins.ts
@@ -1481,21 +1602,24 @@ apps/ui/middleware.ts
 ```
 
 **Types:**
-```
+
+```plaintext
 apps/strapi/types/generated/contentTypes.d.ts (AUTO-GENERATED)
 apps/strapi/types/generated/components.d.ts (AUTO-GENERATED)
 apps/ui/src/types/
 ```
 
 **Styling:**
-```
+
+```plaintext
 packages/design-system/theme.css
 apps/ui/src/styles/globals.css
 apps/ui/src/lib/styles.ts (cn utility)
 ```
 
 **Localization:**
-```
+
+```plaintext
 apps/ui/src/locales/en.json
 apps/ui/src/locales/cs.json
 apps/ui/src/lib/i18n.ts
@@ -1503,7 +1627,8 @@ apps/ui/src/lib/navigation.ts
 ```
 
 **Authentication:**
-```
+
+```plaintext
 apps/ui/src/lib/auth.ts
 apps/ui/src/app/api/auth/[...nextauth]/route.ts
 apps/ui/middleware.ts
@@ -1512,7 +1637,8 @@ apps/ui/middleware.ts
 ### Strapi Structure
 
 **Content Types:**
-```
+
+```plaintext
 apps/strapi/src/api/
   page/
     content-types/page/schema.json
@@ -1527,7 +1653,8 @@ apps/strapi/src/api/
 ```
 
 **Components:**
-```
+
+```plaintext
 apps/strapi/src/components/
   sections/
   forms/
@@ -1537,7 +1664,8 @@ apps/strapi/src/components/
 ```
 
 **Configuration:**
-```
+
+```plaintext
 apps/strapi/config/
   admin.ts
   api.ts
@@ -1551,20 +1679,23 @@ apps/strapi/config/
 ```
 
 **Lifecycle Hooks:**
-```
+
+```plaintext
 apps/strapi/src/lifeCycles/
   adminUser.ts
   user.ts
 ```
 
 **Document Middleware:**
-```
+
+```plaintext
 apps/strapi/src/documentMiddlewares/
   page.ts
 ```
 
 **Utilities:**
-```
+
+```plaintext
 apps/strapi/src/utils/
   breadcrumbs.ts
   hierarchy/
@@ -1573,7 +1704,8 @@ apps/strapi/src/utils/
 ### Next.js Structure
 
 **App Router:**
-```
+
+```plaintext
 apps/ui/src/app/
   [locale]/
     [[...rest]]/page.tsx  # Page builder
@@ -1589,7 +1721,8 @@ apps/ui/src/app/
 ```
 
 **Components:**
-```
+
+```plaintext
 apps/ui/src/components/
   elementary/        # Reusable components
   forms/             # Form components
@@ -1608,7 +1741,8 @@ apps/ui/src/components/
 ```
 
 **API Clients:**
-```
+
+```plaintext
 apps/ui/src/lib/strapi-api/
   base.ts            # Base client + API_ENDPOINTS
   public.ts          # Public client
@@ -1619,7 +1753,8 @@ apps/ui/src/lib/strapi-api/
 ```
 
 **Utilities:**
-```
+
+```plaintext
 apps/ui/src/lib/
   auth.ts            # NextAuth config
   i18n.ts            # i18n config
